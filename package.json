@@ -1,0 +1,19 @@
+{
+  "name": "quiz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ulibs/components": "^0.0.2-next.0",
+    "@ulibs/db": "^1.0.1-next.6",
+    "@ulibs/plugin": "^0.0.2-next.7",
+    "@ulibs/router": "^0.0.5"
+  }
+}
