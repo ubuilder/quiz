@@ -24,63 +24,80 @@ function Quiz() {
             await Questions.insert({
                 title: 'What is 2 + 2',
                 created_by: 1,
-                answers: {
-                    add: [
-                        {value: '3', is_correct: false},
-                        {value: '4', is_correct: true},
-                        {value: '5', is_correct: false},
-                        {value: '2', is_correct: false},
-                    ]
-                }
-            })
+                // answers: [
+                //         {value: '3', is_correct: false},
+                //         {value: '4', is_correct: true},
+                //         {value: '5', is_correct: false},
+                //         {value: '2', is_correct: false},
+                // ]
+                 })
+
+                 await Answers.insert([
+                        {value: '3', question_id: 1, is_correct: false},
+                        {value: '4', question_id: 1, is_correct: true},
+                        {value: '5', question_id: 1, is_correct: false},
+                        {value: '2', question_id: 1, is_correct: false},
+
+                 ])
+             
 
             console.log(await Users.query())
-            console.log(await Questions.query())
+            const questions = await Questions.query({
+                select: {
+                    title: true,
+                    id: true, 
+                    answers: {
+                        value: true,
+                        is_correct: true
+                    }
+                }
+            })
+            console.log(JSON.stringify(questions.data, null, 2))
         },
 
-        async onInstall(ctx) {
-            await ctx.createTable('users', {
+        async onInstall({createTable}) {
+            await createTable('users', {
                 name: 'string|required',
                 email: 'string',
                 username: 'string|required',
                 password: 'string|required'
             });
 
-            await ctx.createTable('questions', {
+            await createTable('questions', {
                 title: 'string|required',
                 created_by: 'users',
-                answers: 'answer[]'
+                answers: 'answers[]'
             })
 
-            await ctx.createTable('answers', {
+            await createTable('answers', {
                 value: 'string|required',
                 question: 'questions',
                 is_correct: 'boolean|required|default=false',                
             })
 
-            await ctx.createTable('roles', {
+            await createTable('roles', {
                 name: 'string|required',
                 description: 'string',
                 users: 'user[]'
             })
 
-            await ctx.createTable('submissions', {
+            await createTable('submissions', {
                 user: 'user',
                 answer: 'answer'
             })
         },
-        async onRemove(ctx) {
-            await ctx.removeTable('users');
-            await ctx.removeTable('roles');
-            await ctx.removeTable('questions');
-            await ctx.removeTable('answers');
-            await ctx.removeTable('submissions');
+        async onRemove({removeTable}) {
+            await removeTable('users');
+            await removeTable('roles');
+            await removeTable('questions');
+            await removeTable('answers');
+            await removeTable('submissions');
         }
     }
 }
 
 
-const {createTable, getModel, removeTable} = connect({client: 'sqlite3', filename: './cms.db'})
+const {createTable, getModel, removeTable} = connect({client: 'sqlite3', filekname: './cms.db'})
 
 const pm = PluginManager({
     config: './plugins.json',
@@ -111,5 +128,10 @@ await installPlugin('quiz', Quiz())
 // console.log('after remove')
 
 
-pm.start()
+await pm.start()
+
+// process.on('exit', () => {
+    // removePlugin('quiz')
+    // process.emit()
+// })
 
