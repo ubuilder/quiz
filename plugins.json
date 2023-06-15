@@ -1,1 +1,1 @@
-{"plugins":[{"name":"quiz","order":1,"active":true}]}
+{"plugins":[{"name":"base","order":1,"active":true},{"name":"quiz","order":1,"active":false},{"name":"cms","order":1,"active":true}]}
