@@ -6,6 +6,7 @@ import http from "http";
 import qs from "qs";
 import { renderHead, renderScripts, renderTemplate } from "@ulibs/router";
 import { Layout, QuestionsPage } from "./views.js";
+import initQuestions from "./questions.js";
 
 function Router() {
   const app = findMyWay();
@@ -115,38 +116,38 @@ function Quiz() {
         username: "admin",
       });
 
-      await Questions.insert({
-        title: "What is 2 + 2",
-        created_by_id: 1,
-        answers: [
-          { value: "3", is_correct: false },
-          { value: "4", is_correct: true },
-          { value: "5", is_correct: false },
-          { value: "2", is_correct: false },
-        ],
-      });
+      initQuestions(ctx);
 
-      // [
-      //   {
-      //     title: 'What is the capital of France?',
-      //     answers: [
-      //       { value: 'Paris', id: 'answer1' },
-      //       { value: 'London', id: 'answer2' },
-      //       { value: 'Madrid', id: 'answer3' },
-      //       { value: 'Berlin', id: 'answer4' }
-      //     ]
-      //   },
-      //   {
-      //     title: 'Who painted the Mona Lisa?',
-      //     answers: [
-      //       { value: 'Leonardo da Vinci', id: 'answer1' },
-      //       { value: 'Vincent van Gogh', id: 'answer2' },
-      //       { value: 'Pablo Picasso', id: 'answer3' },
-      //       { value: 'Michelangelo', id: 'answer4' }
-      //     ]
-      //   }
-      //   // Add more questions here
-      // ]
+      await Questions.insert([
+        {
+          title: "Who painted the Mona Lisa?",
+          answers: [
+            { value: "Leonardo da Vinci", is_correct: true },
+            { value: "Vincent van Gogh", is_correct: false },
+            { value: "Pablo Picasso", is_correct: false },
+            { value: "Michelangelo", is_correct: false },
+          ],
+        },
+        {
+          title: "What is the capital of France?",
+          answers: [
+            { value: "Paris", is_correct: true },
+            { value: "London", is_correct: false },
+            { value: "Madrid", is_correct: false },
+            { value: "Berlin", is_correct: false },
+          ],
+        },
+        // Add more questions here
+      ]);
+
+      console.log(
+        await Questions.query({
+          select: {
+            title: true,
+            answers: true,
+          },
+        })
+      );
 
       //  await Answers.insert([
       //         {value: '3', question_id: 1, is_correct: false},
@@ -155,33 +156,7 @@ function Quiz() {
       //         {value: '2', question_id: 1, is_correct: false},
 
       //  ])
-
-      ctx.addPage("/questions", {
-        async load() {
-          const randomIds = [1, 4, 6, 3, 15];
-          const result = await Questions.query({
-            where: {
-              id: randomIds.join(",") + ":in",
-            },
-            select: {
-              title: true,
-              answers: {
-                value: true,
-              },
-            },
-          });
-
-          return {
-            questions: result.data,
-          };
-        },
-        page({ questions }) {
-          console.log({ questions });
-          return Layout({}, QuestionsPage({ questions }));
-        },
-      });
     },
-
     async onInstall({ createTable }) {
       await createTable("users", {
         name: "string|required",
@@ -291,6 +266,9 @@ await pm.install("cms", Cms());
 
 await pm.start();
 
+export function getContext() {
+  return pm.ctx;
+}
 // process.on('exit', () => {
 // removePlugin('quiz')
 // process.emit()
