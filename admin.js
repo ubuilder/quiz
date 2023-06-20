@@ -9,7 +9,7 @@ export default function initAdmin(ctx) {
     async load({ headers }) {
       const Users = ctx.getModel("users");
 
-      const cookies = cookie.parse(headers.cookie);
+      const cookies = cookie.parse(headers.cookie ?? "");
 
       if (cookies["token"]) {
         const user = await Users.get(cookies.token);
