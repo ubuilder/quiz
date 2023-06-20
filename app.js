@@ -7,6 +7,8 @@ import qs from "qs";
 import { renderHead, renderScripts, renderTemplate } from "@ulibs/router";
 import { Layout, QuestionsPage } from "./views.js";
 import initQuestions from "./questions.js";
+import initUserManagement from "./users.js";
+import initAdmin from "./admin.js";
 
 function Router() {
   const app = findMyWay();
@@ -25,7 +27,7 @@ function Router() {
 
   function parseBody(req) {
     return new Promise((resolve) => {
-      let body;
+      let body = "";
       req.on("data", (chunk) => (body += chunk));
       req.on("end", () => resolve(body));
     });
@@ -84,11 +86,43 @@ function Router() {
         return res.end(renderPage({}));
       }
     });
+
+    app.post(route, async (req, res, params, store, query) => {
+      console.log("POST", route, { req, query, params, res });
+      let action;
+      for (let key in query) {
+        if (key in actions) {
+          action = actions[key];
+          break;
+        }
+      }
+      if (action) {
+        const body = await parseBody(req);
+        const request = {
+          body,
+          query,
+          params,
+        };
+
+        if (body.startsWith("{")) {
+          // check from header
+          request.body = JSON.parse(body);
+        } else {
+          request.body = qs.parse(body);
+        }
+
+        const result = await action(request);
+
+        res
+          .writeHead(result.status ?? 200, result.headers ?? {})
+          .end(result.body ? JSON.stringify(result.body) : "");
+      }
+    });
     //
   }
 
-  function removePage() {
-    //
+  function removePage(route) {
+    app.delete(route);
   }
 
   return {
@@ -116,38 +150,41 @@ function Quiz() {
         username: "admin",
       });
 
+      initUserManagement(ctx);
+
+      initAdmin(ctx);
       initQuestions(ctx);
 
-      await Questions.insert([
-        {
-          title: "Who painted the Mona Lisa?",
-          answers: [
-            { value: "Leonardo da Vinci", is_correct: true },
-            { value: "Vincent van Gogh", is_correct: false },
-            { value: "Pablo Picasso", is_correct: false },
-            { value: "Michelangelo", is_correct: false },
-          ],
-        },
-        {
-          title: "What is the capital of France?",
-          answers: [
-            { value: "Paris", is_correct: true },
-            { value: "London", is_correct: false },
-            { value: "Madrid", is_correct: false },
-            { value: "Berlin", is_correct: false },
-          ],
-        },
-        // Add more questions here
-      ]);
+      // await Questions.insert([
+      //   {
+      //     title: "Who painted the Mona Lisa?",
+      //     answers: [
+      //       { value: "Leonardo da Vinci", is_correct: true },
+      //       { value: "Vincent van Gogh", is_correct: false },
+      //       { value: "Pablo Picasso", is_correct: false },
+      //       { value: "Michelangelo", is_correct: false },
+      //     ],
+      //   },
+      //   {
+      //     title: "What is the capital of France?",
+      //     answers: [
+      //       { value: "Paris", is_correct: true },
+      //       { value: "London", is_correct: false },
+      //       { value: "Madrid", is_correct: false },
+      //       { value: "Berlin", is_correct: false },
+      //     ],
+      //   },
+      //   // Add more questions here
+      // ]);
 
-      console.log(
-        await Questions.query({
-          select: {
-            title: true,
-            answers: true,
-          },
-        })
-      );
+      // console.log(
+      //   await Questions.query({
+      //     select: {
+      //       title: true,
+      //       answers: true,
+      //     },
+      //   })
+      // );
 
       //  await Answers.insert([
       //         {value: '3', question_id: 1, is_correct: false},

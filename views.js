@@ -1,58 +1,84 @@
 import {
-  Divider,
+  Row,
+  Col,
+  Card,
+  CardActions,
+  CardBody,
+  CardFooter,
+  Container,
   Button,
   Modal,
   ModalBody,
+  ButtonGroup,
   View,
   Input,
 } from "@ulibs/components";
 
 export function QuestionsPage({ questions = [] }) {
   function Answer({ answer: { value, id }, questionId }) {
-    return View(
-      {
-        mb: "sm",
-      },
-      [
-        Input({
-          type: "radio",
-          name: questionId,
-          me: "md",
-          value: id,
-        }),
-        View(value),
-      ]
-    );
+    return Col({ col: 12, colMd: 6, colXl: 3 }, [
+      Input({
+        type: "radio",
+        name: questionId,
+        value: id,
+        label: value,
+      }),
+    ]);
   }
 
   function Question({ question: { id, title, answers } }) {
     return View([
       View({ tag: "h3", my: "sm" }, title),
-      answers.map((answer) => Answer({ answer, questionId: id })),
-      Divider(),
+      Row([answers.map((answer) => Answer({ answer, questionId: id }))]),
     ]);
   }
 
   function Header() {
-    return View(
-      {
-        style:
-          "display: flex; align-items: center; justify-content: space-between;",
-      },
-      [
-        View({ tag: "h2" }, "Quiz App"),
-        Button({ color: "primary", onClick: "openAddModal()" }, "Add Question"),
-      ]
-    );
+    return Container({ size: "lg", mx: "auto", my: "md" }, [
+      Row({ style: "align-items: center;" }, [
+        Col([View({ tag: "h2" }, "Quiz App")]),
+        Col({ ms: "auto" }, [
+          Button(
+            { color: "primary", onClick: "openAddModal()" },
+            "Add Question"
+          ),
+        ]),
+      ]),
+    ]);
   }
 
   function modal() {
-    return Modal({ id: "add-question-modal" }, [
-      ModalBody([
-        "Add Question modal (title+ answers)",
-        Button({ onClick: "closeAddModal()" }, "Close"),
-      ]),
-    ]);
+    return Modal(
+      {
+        id: "add-question-modal",
+        size: "xs",
+      },
+      [
+        ModalBody([
+          "Add Question modal (title+ answers)",
+          View({ tag: "form", action: "?create", method: "POST" }, [
+            Input({ label: "Question:", name: "title" }),
+
+            Input({ label: "Answer #1", name: "answers[0][value]" }),
+            Input({ type: "radio", name: "answers[0][is_correct]" }),
+
+            Input({ label: "Answer #2", name: "answers[1][value]" }),
+            Input({ type: "radio", name: "answers[1][is_correct]" }),
+
+            Input({ label: "Answer #3", name: "answers[2][value]" }),
+            Input({ type: "radio", name: "answers[2][is_correct]" }),
+
+            Input({ label: "Answer #4", name: "answers[3][value]" }),
+            Input({ type: "radio", name: "answers[3][is_correct]" }),
+
+            ButtonGroup({}, [
+              Button({ type: "button", onClick: "closeAddModal()" }, "Close"),
+              Button({ color: "primary", onClick: "closeAddModal()" }, "Add"),
+            ]),
+          ]),
+        ]),
+      ]
+    );
   }
 
   function Script() {
@@ -70,9 +96,11 @@ export function QuestionsPage({ questions = [] }) {
     });
   }
 
-  return View({ p: "lg" }, [
+  return View([
     Header(),
-    questions.map((question) => Question({ question })),
+    Container({ size: "lg", mx: "auto" }, [
+      questions.map((question) => Question({ question })),
+    ]),
     modal(),
     Script(),
   ]);
@@ -96,4 +124,50 @@ export function Layout(props, slots) {
     },
     slots
   );
+}
+
+export function LoginPage() {
+  return Container({ size: "xs", px: "md", mx: "auto", mt: "xl", pt: "xl" }, [
+    View({ tag: "form", method: "POST", action: "?login" }, [
+      Card({ mt: "xl", title: "Login" }, [
+        CardBody([
+          Row([
+            Col({ col: 12 }, Input({ name: "username", label: "Username" })),
+            Col(
+              { col: 12 },
+              Input({ name: "password", type: "password", label: "Password" })
+            ),
+            // Col({col: 12}, Input({name: 'remember', label: 'Remember Me'})),
+          ]),
+        ]),
+        CardFooter([
+          Button({ color: "primary" }, "Login"),
+          Button({ link: true, type: "button" }, "Forgot password"),
+        ]),
+      ]),
+    ]),
+  ]);
+}
+
+export function AdminPage({ user }, slot) {
+  let content = View("No Access!");
+
+  if (user) {
+    content = View({ my: "md" }, [
+      Row([
+        Col({ col: true }, [
+          View({ tag: "h3" }, `Welcome to dashboard ${user.name}!`),
+        ]),
+        Col({ col: 0 }, [
+          View(
+            { tag: "form", method: "POST", action: "?logout" },
+            Button({ color: "error" }, "Logout")
+          ),
+        ]),
+      ]),
+      Card({ mt: "md" }, [CardBody(slot)]),
+    ]);
+  }
+
+  return Container({ size: "lg", mx: "auto", px: "md" }, [content]);
 }
