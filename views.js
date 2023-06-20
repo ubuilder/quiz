@@ -38,10 +38,13 @@ export function QuestionsPage({ questions = [] }) {
       Row({ style: "align-items: center;" }, [
         Col([View({ tag: "h2" }, "Quiz App")]),
         Col({ ms: "auto" }, [
-          Button(
-            { color: "primary", onClick: "openAddModal()" },
-            "Add Question"
-          ),
+          ButtonGroup([
+            Button({ href: "/" }, "Home"),
+            Button(
+              { color: "primary", onClick: "openAddModal()" },
+              "Add Question"
+            ),
+          ]),
         ]),
       ]),
     ]);
@@ -168,6 +171,7 @@ export function LoginPage() {
         ]),
       ]),
     ]),
+    Button({ href: "/", my: "md", mx: "auto" }, "Go Back"),
   ]);
 }
 
@@ -183,7 +187,10 @@ export function AdminPage({ user }, slot) {
         Col({ col: 0 }, [
           View(
             { tag: "form", method: "POST", action: "?logout" },
-            Button({ color: "error" }, "Logout")
+            ButtonGroup([
+              Button({ href: "/" }, "Home"),
+              Button({ color: "error" }, "Logout"),
+            ])
           ),
         ]),
       ]),
