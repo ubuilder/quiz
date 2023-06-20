@@ -14,7 +14,7 @@
     "@ulibs/components": "^0.0.2-next.29",
     "@ulibs/db": "^1.0.1-next.14",
     "@ulibs/plugin": "^0.0.2-next.7",
-    "@ulibs/router": "^0.0.6",
+    "@ulibs/router": "^0.0.7",
     "cookie": "^0.5.0",
     "find-my-way": "^7.6.2",
     "qs": "^6.11.2"
