@@ -4,8 +4,9 @@ import { connect } from "@ulibs/db";
 import findMyWay from "find-my-way";
 import http from "http";
 import qs from "qs";
+import * as cookie from "cookie";
 import { renderHead, renderScripts, renderTemplate } from "@ulibs/router";
-import { Layout, QuestionsPage } from "./views.js";
+import { Layout, QuestionsPage, HomePage } from "./views.js";
 import initQuestions from "./questions.js";
 import initUserManagement from "./users.js";
 import initAdmin from "./admin.js";
@@ -148,6 +149,22 @@ function Quiz() {
         password: "1qaz!QAZ",
         email: "admin@quiz.com",
         username: "admin",
+      });
+
+      ctx.addPage("/", {
+        page: HomePage,
+        async load({ headers }) {
+          const Users = ctx.getModel("users");
+
+          const cookies = cookie.parse(headers.cookie);
+
+          if (cookies["token"]) {
+            const user = await Users.get(cookies.token);
+            return { user };
+          } else {
+            return {};
+          }
+        },
       });
 
       initUserManagement(ctx);

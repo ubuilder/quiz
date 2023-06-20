@@ -126,6 +126,28 @@ export function Layout(props, slots) {
   );
 }
 
+export function HomePage({ user }) {
+  return Layout({}, [
+    Container({ size: "lg", mx: "auto" }, [
+      Row([
+        View({ ms: "auto", p: "md" }, [
+          ButtonGroup({ ms: "auto" }, [
+            user
+              ? undefined
+              : Button({ color: "primary", href: "/login" }, "Login"),
+            Button({ color: "success", href: "/questions" }, "Questions"),
+            user && Button({ color: "dark", href: "/admin" }, "Admin"),
+          ]),
+        ]),
+      ]),
+      Row([View({ py: "xl", my: "xl" }, ["Section 1 (links)"])]),
+      Row([View({ py: "xl", my: "xl" }, "Section 2")]),
+      Row([View({ py: "xl", my: "xl" }, "Section 3")]),
+      Row([View({ py: "xl", my: "xl" }, "Section 4")]),
+    ]),
+  ]);
+}
+
 export function LoginPage() {
   return Container({ size: "xs", px: "md", mx: "auto", mt: "xl", pt: "xl" }, [
     View({ tag: "form", method: "POST", action: "?login" }, [
