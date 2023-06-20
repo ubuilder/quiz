@@ -27,7 +27,7 @@ export default function (ctx) {
       };
     },
     actions: {
-      create({ body }) {
+      async create({ body }) {
         const created_by_id = 1;
         const title = body.title ?? "What is 2 + 2?";
         const answers = body.answers ?? [
@@ -37,11 +37,18 @@ export default function (ctx) {
           { value: "2", is_correct: false },
         ];
 
-        return Questions.insert({
+        await Questions.insert({
           title,
           created_by_id,
           answers,
         });
+
+        return {
+          status: 303, 
+          headers: {
+            location: '/questions'
+          }
+        }
       },
     },
     page({ questions }) {
