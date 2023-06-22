@@ -60,7 +60,7 @@ export function LoginPage() {
   ]);
 }
 
-export function AdminLayout({ sidebar = [], user }, slots) {
+export function AdminLayout({ title, sidebar = [], user }, slots) {
   console.log("Admin Layout", sidebar);
   function Sidebar() {
     return View(
@@ -118,6 +118,7 @@ export function AdminLayout({ sidebar = [], user }, slots) {
   return [
     View(
       {
+        htmlHead: title ? `<title>${title}</title>` : "",
         style:
           "position: fixed; width: 240px; top: 0; left: 0; height: 100%; background-color: var(--color-base-100); border-right: 1px solid var(--color-base-400);",
       },

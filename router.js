@@ -37,6 +37,7 @@ export function Router() {
         const queryString = req.url.split("?")[1];
 
         const request = {
+          url: req.url,
           headers: req.headers,
           params,
           query: qs.parse(queryString),

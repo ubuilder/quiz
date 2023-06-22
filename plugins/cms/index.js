@@ -77,6 +77,7 @@ export default function CmsPlugin({
 
     async onStart(ctx) {
       ctx.addLayout("/", {
+        load: (props) => props,
         component: Layout,
       });
 
