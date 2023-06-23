@@ -232,7 +232,10 @@ function TestCrud({
   };
 }
 
-await pm.install("cms", CmsPlugin({ port: 3002, filename: ":memory:" }));
+await pm.install(
+  "cms",
+  CmsPlugin({ port: process.env.PORT ?? 3002, filename: ":memory:" })
+);
 await pm.install("quiz", QuizPlugin());
 await pm.install("plugin", PluginManagementPlugin());
 await pm.install(
@@ -286,17 +289,17 @@ await pm.install(
 );
 
 await pm.start();
-const ctx = pm.getCotext();
+// const ctx = pm.getCotext();
 
-console.log("ctx: ", ctx);
+// console.log("ctx: ", ctx);
 
-const app = express();
+// const app = express();
 
-app.use((req, res, next) => {
-  return ctx.handleRequest(req, res);
-});
+// app.use((req, res, next) => {
+//   return ctx.handleRequest(req, res);
+// });
 
-export default app;
+// export default app;
 
 // {
 //   key: "gender",
