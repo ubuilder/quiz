@@ -1,40 +1,39 @@
 import { connect } from "@ulibs/db";
-import { Router } from "../../router.js";
+import { Router } from "@ulibs/router";
+
 import initUserManagement from "../user-management/index.js";
 import { View } from "@ulibs/components";
 
 export function Layout(props, slots) {
-  return View(
-    {
-      htmlHead: [
-        View({ tag: "meta", charset: "UTF-8" }),
-        View({
-          tag: "meta",
-          "http-equiv": "X-UA-Compatible",
-          content: "IE=edge",
-        }),
-        View({
-          tag: "meta",
-          name: "viewport",
-          content: "width=device-width, initial-scale=1.0",
-        }),
+  return View({ tag: "html" }, [
+    View({ tag: "head" }, [
+      View({ tag: "meta", charset: "UTF-8" }),
+      View({
+        tag: "meta",
+        "http-equiv": "X-UA-Compatible",
+        content: "IE=edge",
+      }),
+      View({
+        tag: "meta",
+        name: "viewport",
+        content: "width=device-width, initial-scale=1.0",
+      }),
 
-        View({
-          component: "link",
-          tag: "link",
-          rel: "stylesheet",
-          href: "https://unpkg.com/@ulibs/components@next/dist/styles.css",
-        }),
-        View({
-          tag: "script",
-          async: true,
-          defer: true,
-          src: "https://unpkg.com/@ulibs/components@next/dist/ulibs.js",
-        }),
-      ],
-    },
-    slots
-  );
+      View({
+        component: "link",
+        tag: "link",
+        rel: "stylesheet",
+        href: "https://unpkg.com/@ulibs/components@next/dist/styles.css",
+      }),
+      View({
+        tag: "script",
+        async: true,
+        defer: true,
+        src: "https://unpkg.com/@ulibs/components@next/dist/ulibs.js",
+      }),
+    ]),
+    View({ tag: "body" }, slots), // class: 'dark'
+  ]);
 }
 
 export default function CmsPlugin({
@@ -54,11 +53,12 @@ export default function CmsPlugin({
       ctx.getModel = getModel;
       ctx.removeTable = removeTable;
 
-      const { startServer, addPage, addLayout } = Router();
+      const { startServer, addPage, addLayout, handleRequest } = Router();
 
       ctx.startServer = startServer;
       ctx.addPage = addPage;
       ctx.addLayout = addLayout;
+      ctx.handleRequest = handleRequest;
 
       ctx.installPlugin = (name, methods) => {
         return pm.install(name, methods);

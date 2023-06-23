@@ -5,7 +5,7 @@ import { FormPage, TablePage } from "./views.js";
 import { AdminLayout } from "./plugins/user-management/views.js";
 import PluginManagementPlugin from "./plugins/plugin-management/index.js";
 import { Badge, Card, CardBody } from "@ulibs/components";
-import { renderTemplate } from "@ulibs/router";
+import express from "express";
 
 const pm = PluginManager({
   config: "./plugins.json",
@@ -270,15 +270,6 @@ await pm.install(
         showOnList: false,
       },
       { key: "email", inputType: "input", dataType: "string", name: "Email" },
-      // {
-      //   key: "gender",
-      //   inputType: "radios",
-      //   dataType: "string",
-      //   name: "Gender",
-      //   items: ["Male", "Female"],
-      //   renderOnList: (value) =>
-      //     Badge({ color: value === "Male" ? "primary" : "success" }, value),
-      // },
       {
         key: "roles",
         inputType: "checkboxes",
@@ -286,10 +277,7 @@ await pm.install(
         name: "Roles",
         items: ["Admin", "User"],
         showOnList: false,
-        afterRead: (value) => {
-          console.log(value, typeof value);
-          return JSON.parse(value);
-        },
+        afterRead: (value) => JSON.parse(value),
         beforeUpdate: (value) => JSON.stringify(value),
         beforeInsert: (value) => JSON.stringify(value),
       },
@@ -298,3 +286,24 @@ await pm.install(
 );
 
 await pm.start();
+const ctx = pm.getCotext();
+
+console.log("ctx: ", ctx);
+
+const app = express();
+
+app.use((req, res, next) => {
+  return ctx.handleRequest(req, res);
+});
+
+export default app;
+
+// {
+//   key: "gender",
+//   inputType: "radios",
+//   dataType: "string",
+//   name: "Gender",
+//   items: ["Male", "Female"],
+//   renderOnList: (value) =>
+//     Badge({ color: value === "Male" ? "primary" : "success" }, value),
+// },
