@@ -98,13 +98,22 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
       [
         Container({ size: "xl", mx: "auto" }, [
           // check if is logged in from props
-          Row([
+          Row({ style: "align-items: center;" }, [
             Col({ col: true }),
-            Col([
-              user
-                ? Avatar({ color: "dark", size: "sm" }, "HA")
-                : Button({ href: "/login" }, "Login"),
-            ]),
+            user
+              ? [
+                  Col([
+                    Avatar(
+                      { color: "info", size: "xs" },
+                      user.name.substring(0, 2)
+                    ),
+                  ]),
+                  Form(
+                    { action: "logout" },
+                    Col([Button({ color: "error" }, "Logout")])
+                  ),
+                ]
+              : Col([Button({ href: "/login" }, "Login")]),
           ]),
         ]),
       ]
@@ -112,7 +121,10 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
   }
 
   function Body(props, slots) {
-    return Container({ size: "xl", mx: "auto" }, slots);
+    return Container(
+      { size: "xl", mx: "auto" },
+      user ? slots : Card({ mt: "md" }, [CardBody("You are not logged in!")])
+    );
   }
 
   return [

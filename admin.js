@@ -6,18 +6,6 @@ export default function initAdmin(ctx) {
     page({ user }) {
       return Layout({}, AdminPage({ user }, "Content of admin page..."));
     },
-    async load({ headers }) {
-      const Users = ctx.getModel("users");
-
-      const cookies = cookie.parse(headers.cookie ?? "");
-
-      if (cookies["token"]) {
-        const user = await Users.get(cookies.token);
-        return { user };
-      } else {
-        return {};
-      }
-    },
     actions: {
       async logout() {
         return {

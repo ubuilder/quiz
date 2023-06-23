@@ -5,20 +5,15 @@ import * as cookie from "cookie";
 export default async function initUserManagement(ctx) {
   const Users = ctx.getModel("users");
 
-  await Users.insert({
-    name: "Admin",
-    password: "1qaz!QAZ",
-    email: "admin@quiz.com",
-    username: "admin",
-  });
-
   ctx.login = async ({ username, password } = {}) => {
+    console.log("logging in", { username, password });
     const user = await Users.query({
       where: {
         username: username + ":=",
-        password: password + ":=",
+        password: password + "_hashed:=",
       },
     });
+    console.log({ user }, await Users.query());
 
     if (user.data.length > 0) {
       return {
@@ -40,10 +35,12 @@ export default async function initUserManagement(ctx) {
       return null;
     }
 
+    delete user["password"];
+    user.roles = JSON.parse(user["roles"]);
     return user;
   };
 
-  ctx.logout = async () => {
+  ctx.logout = () => {
     return {
       cookie: `token=; HttpOnly; Path=/`,
     };
@@ -81,6 +78,18 @@ export default async function initUserManagement(ctx) {
       };
     },
   });
+
+  // ctx.addPage("/logout", {
+  //   load() {
+  //     const cookie = ctx.logout();
+  //     return redirect({
+  //       location: "/login",
+  //       headers: {
+  //         "set-cookie": cookie,
+  //       },
+  //     });
+  //   },
+  // });
 
   ctx.addPage(
     "/login",

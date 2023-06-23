@@ -13,12 +13,21 @@ export default function QuizPlugin() {
 
       initQuestions(ctx);
     },
-    async onInstall({ createTable }) {
+    async onInstall({ createTable, getModel }) {
       await createTable("users", {
         name: "string|required",
         email: "string",
         username: "string|required",
         password: "string|required",
+        roles: "string",
+      });
+
+      await getModel("users").insert({
+        name: "Admin",
+        password: "1qaz!QAZ_hashed",
+        email: "admin@quiz.com",
+        username: "admin",
+        roles: `["Admin"]`,
       });
 
       await createTable("questions", {

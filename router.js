@@ -46,13 +46,16 @@ export function Router() {
 
         let result = {};
 
-        for (let layout of layouts) {
-          if (layout.load && req.url.startsWith(layout.route)) {
-            result = { ...result, ...(await layout.load()) };
+        for (let i = layouts.length - 1; i >= 0; i--) {
+          console.log("run load of layouts: ", i, layouts[i]);
+          if (layouts[i].load && req.url.startsWith(layouts[i].route)) {
+            result = { ...result, ...(await layouts[i].load(request)) };
           }
         }
 
-        result = { ...result, ...(await load(request)) };
+        if (load) {
+          result = { ...result, ...(await load(request)) };
+        }
 
         return result;
       }
@@ -61,6 +64,7 @@ export function Router() {
         let pageComponent = page(props);
         for (let i = layouts.length - 1; i >= 0; i--) {
           const layout = layouts[i];
+          console.log("all layouts: ", layouts);
           console.log("current layout", layout);
           if (layout.component && req.url.startsWith(layout.route)) {
             console.log("run layout", layout.route);
@@ -93,23 +97,46 @@ export function Router() {
         const result = await runLoad();
 
         return res.json(result);
-      } else if (load) {
+      } else {
         const props = await runLoad();
 
         return res.end(renderPage(props));
-      } else {
-        return res.end(renderPage({}));
       }
     });
 
     app.post(route, async (req, res, params, store, query) => {
       let action;
+
+      let actionName;
       for (let key in query) {
-        if (key in actions && query[key] === "") {
-          action = actions[key];
+        if (query[key] === "") {
+          actionName = key;
           break;
         }
       }
+
+      function findActionInActions(actions) {
+        console.log({ actions, actionName });
+        for (let key in actions) {
+          if (key === actionName) {
+            console.log("retuning: ", actions[actionName]);
+            return actions[actionName];
+          }
+        }
+      }
+
+      action = findActionInActions(actions);
+      if (!action) {
+        for (let i = layouts.length - 1; i >= 0; i--) {
+          const layout = layouts[i];
+          console.log("current layout", layout);
+          if (layout.actions) {
+            action = findActionInActions(layout.actions);
+            if (action) break;
+          }
+        }
+      }
+      console.log("action: ", action);
 
       if (action) {
         const body = await parseBody(req);
@@ -137,9 +164,9 @@ export function Router() {
     //
   }
 
-  function addLayout(route, { component, load } = {}) {
-    console.log("addLayout", route, component, load);
-    layouts.push({ route, component, load });
+  function addLayout(route, { component, load, actions } = {}) {
+    console.log("addLayout", route, component, load, actions);
+    layouts.push({ route, component, load, actions });
     // if(load) {
     // const props = await runLoad()
     // }

@@ -9,6 +9,8 @@ import {
   CardTitle,
   Button,
   Modal,
+  RadioGroup,
+  CheckboxGroup,
   ModalBody,
   ButtonGroup,
   View,
@@ -24,45 +26,23 @@ import {
 
 export function FormPage({ url, title, action, fields, value } = {}) {
   function Field({ field }) {
-    console.log(field);
-    if (field.type === "input") {
-      return Input({
-        name: field.name,
-        value: value[field.name],
-        ...(field.props ?? {}),
-      });
-    } else if (field.type === "checkboxes") {
-      return CheckboxGroup({
-        name: field.name,
-        value: value[field.name],
-        ...(field.props ?? {}),
-      });
-    } else if (field.type === "checkbox") {
-      return Checkbox({
-        name: field.name,
-        value: value[field.name],
-        ...(field.props ?? {}),
-      });
-    } else if (field.type === "radios") {
-      return RadioGroup({
-        name: field.name,
-        value: value[field.name],
-        ...(field.props ?? {}),
-      });
-    } else {
-      return field.type;
-    }
+    let componentMap = {
+      checkboxes: CheckboxGroup,
+      checkbox: Checkbox,
+      radios: RadioGroup,
+      input: Input,
+    };
+
+    const { type, ...props } = field;
+    props.value = value[field.name];
+    let component = componentMap[type] ?? View;
+
+    return component(props);
   }
 
   return [
     Row({ my: "md" }, [
       Col({ col: true }, [title && View({ tag: "h3" }, title)]),
-      Col({ col: 0 }, [
-        // Button({ color: "primary", href: url + "/add" }, [
-        //   Icon({ name: "plus" }),
-        //   "Done",
-        // ]),
-      ]),
     ]),
     Form({ action }, [
       Card([
@@ -72,14 +52,36 @@ export function FormPage({ url, title, action, fields, value } = {}) {
               "padding: var(--size-sm); display: flex; align-items: center; gap: var(--size-sm);",
           },
           [
-            Button({ size: "xl", link: true, onClick: "history.back()" }, [
-              Icon({ name: "arrow-left" }),
-            ]),
+            Button(
+              {
+                type: "button",
+                size: "xl",
+                link: true,
+                onClick: "history.back()",
+              },
+              [Icon({ name: "arrow-left" })]
+            ),
             CardTitle([title]),
           ]
         ),
 
-        CardBody([fields.map((field) => Field({ field }))]),
+        CardBody([
+          Row([
+            fields.map((field) =>
+              Col(
+                {
+                  col: field.col,
+                  colXs: field.colXs,
+                  colSm: field.colSm,
+                  colMd: field.colMd,
+                  colLg: field.colLg,
+                  colXl: field.colXl,
+                },
+                Field({ field })
+              )
+            ),
+          ]),
+        ]),
         CardFooter([
           CardActions([
             ButtonGroup([
@@ -114,7 +116,9 @@ export function TablePage({ title, url, data, columns, page, perPage, sort }) {
           TableBody(
             data.map((row) =>
               TableRow([
-                ...columns.map((column) => TableCell(row[column.key])),
+                ...columns.map((column) =>
+                  TableCell([column.render(row[column.key])])
+                ),
                 TableCell([
                   View({ style: "display: flex; gap: var(--size-sm)" }, [
                     Button({}, [Icon({ name: "eye" })]),
