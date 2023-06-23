@@ -49,7 +49,7 @@ export function FormPage({ url, title, action, fields, value } = {}) {
         View(
           {
             style:
-              "padding: var(--size-sm); display: flex; align-items: center; gap: var(--size-sm);",
+              "padding: var(--size-xs); display: flex; align-items: center; gap: var(--size-sm);",
           },
           [
             Button(
@@ -57,7 +57,7 @@ export function FormPage({ url, title, action, fields, value } = {}) {
                 type: "button",
                 size: "xl",
                 link: true,
-                onClick: "history.back()",
+                onClick: "window.location = document.referrer",
               },
               [Icon({ name: "arrow-left" })]
             ),
