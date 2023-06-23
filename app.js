@@ -8,7 +8,7 @@ import { Badge, Card, CardBody } from "@ulibs/components";
 import express from "express";
 
 const pm = PluginManager({
-  // config: "./plugins.json",
+  config: "./plugins.json",
 });
 
 function TestCrud({
