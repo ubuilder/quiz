@@ -64,6 +64,7 @@ export function QuestionsPage({ questions = [] }) {
       {
         id: "add-question-modal",
         size: "xs",
+        style: 'max-width: 20rem',
       },
       [
         ModalBody([
@@ -77,38 +78,38 @@ export function QuestionsPage({ questions = [] }) {
 
               Col(
                 { col: 8 },
-                Input({ label: "Answer #1", name: "answers.0.value" })
+                Input({ label: "Answer #1", name: "answers[0][value]" })
               ),
               Col(
                 { col: 4, mt: "lg" },
-                Checkbox({ name: "answers.0.is_correct", label: "Correct?" })
+                Checkbox({ name: "answers[0][is_correct]", label: "Correct?" })
               ),
 
               Col(
                 { col: 8 },
-                Input({ label: "Answer #2", name: "answers.1.value" })
+                Input({ label: "Answer #2", name: "answers[1][value]" })
               ),
               Col(
                 { col: 4, mt: "lg" },
-                Checkbox({ name: "answers.1.is_correct", label: "Correct?" })
+                Checkbox({ name: "answers[1][is_correct]", label: "Correct?" })
               ),
 
               Col(
                 { col: 8 },
-                Input({ label: "Answer #3", name: "answers.2.value" })
+                Input({ label: "Answer #3", name: "answers[2][value]" })
               ),
               Col(
                 { col: 4, mt: "lg" },
-                Checkbox({ name: "answers.2.is_correct", label: "Correct?" })
+                Checkbox({ name: "answers[2][is_correct]", label: "Correct?" })
               ),
 
               Col(
                 { col: 8 },
-                Input({ label: "Answer #4", name: "answers.3.value" })
+                Input({ label: "Answer #4", name: "answers[3][value]" })
               ),
               Col(
                 { col: 4, mt: "lg" },
-                Checkbox({ name: "answers.3.is_correct", label: "Correct?" })
+                Checkbox({ name: "answers[3][is_correct]", label: "Correct?" })
               ),
 
               ButtonGroup({ col: 12, ms: "auto" }, [

@@ -28,6 +28,7 @@ export default function initQuestions(ctx) {
       async create({ body }) {
         const created_by_id = 1;
         const title = body.title ?? "What is 2 + 2?";
+        console.log(body);
         const answers = body.answers ?? [
           { value: "3", is_correct: false },
           { value: "4", is_correct: true },

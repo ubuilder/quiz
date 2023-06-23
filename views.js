@@ -33,11 +33,13 @@ export function FormPage({ url, title, action, fields, value } = {}) {
       input: Input,
     };
 
-    const { type, ...props } = field;
+    const { name, component, props, text } = field;
+    props.name = name;
+    props.label = text;
     props.value = value[field.name];
-    let component = componentMap[type] ?? View;
 
-    return component(props);
+    console.log({ props, component, fields });
+    return (componentMap[component] ?? View)(props);
   }
 
   return [
@@ -67,17 +69,17 @@ export function FormPage({ url, title, action, fields, value } = {}) {
 
         CardBody([
           Row([
-            fields.map((field) =>
+            Object.keys(fields).map((key) =>
               Col(
                 {
-                  col: field.col,
-                  colXs: field.colXs,
-                  colSm: field.colSm,
-                  colMd: field.colMd,
-                  colLg: field.colLg,
-                  colXl: field.colXl,
+                  col: fields[key].props.col,
+                  colXs: fields[key].props.colXs,
+                  colSm: fields[key].props.colSm,
+                  colMd: fields[key].props.colMd,
+                  colLg: fields[key].props.colLg,
+                  colXl: fields[key].props.colXl,
                 },
-                Field({ field })
+                Field({ field: fields[key] })
               )
             ),
           ]),
@@ -110,15 +112,13 @@ export function TablePage({ title, url, data, columns, page, perPage, sort }) {
       Table([
         TableHead([
           TableRow([
-            ...columns.map((column) => TableCell(column.name)),
+            ...columns.map((column) => TableCell(column.text)),
             TableCell({ style: "width: 0" }, "Actions"),
           ]),
           TableBody(
             data.map((row) =>
               TableRow([
-                ...columns.map((column) =>
-                  TableCell([column.render(row[column.key])])
-                ),
+                ...columns.map((column) => TableCell([row[column.name]])), // render function
                 TableCell([
                   View({ style: "display: flex; gap: var(--size-xxs)" }, [
                     Button({ size: "sm" }, [Icon({ name: "eye" })]),

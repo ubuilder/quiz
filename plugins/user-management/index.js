@@ -34,6 +34,7 @@ export default async function initUserManagement(ctx) {
     if (!user) {
       return null;
     }
+    console.log(user);
 
     delete user["password"];
     user.roles = JSON.parse(user["roles"]);

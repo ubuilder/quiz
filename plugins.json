@@ -1,0 +1,1 @@
+{"plugins":[{"name":"cms","order":1,"active":true},{"name":"admin-panel","order":1,"active":true},{"name":"quiz","order":1,"active":true},{"name":"plugin","order":1,"active":true},{"name":"crud-uzers","order":1,"active":true},{"name":"another-crud","order":1,"active":true}]}
