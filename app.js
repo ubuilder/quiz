@@ -8,7 +8,7 @@ import { Badge, Card, CardBody } from "@ulibs/components";
 import express from "express";
 
 const pm = PluginManager({
-  config: "./plugins.json",
+  // config: "./plugins.json",
 });
 
 function TestCrud({
@@ -232,7 +232,7 @@ function TestCrud({
   };
 }
 
-await pm.install("cms", CmsPlugin({ port: 3002 }));
+await pm.install("cms", CmsPlugin({ port: 3002, filename: ":memory:" }));
 await pm.install("quiz", QuizPlugin());
 await pm.install("plugin", PluginManagementPlugin());
 await pm.install(
