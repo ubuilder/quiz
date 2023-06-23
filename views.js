@@ -120,10 +120,14 @@ export function TablePage({ title, url, data, columns, page, perPage, sort }) {
                   TableCell([column.render(row[column.key])])
                 ),
                 TableCell([
-                  View({ style: "display: flex; gap: var(--size-sm)" }, [
-                    Button({}, [Icon({ name: "eye" })]),
+                  View({ style: "display: flex; gap: var(--size-xxs)" }, [
+                    Button({ size: "sm" }, [Icon({ name: "eye" })]),
                     Button(
-                      { href: url + "/" + row.id + "/edit", color: "warning" },
+                      {
+                        size: "sm",
+                        href: url + "/" + row.id + "/edit",
+                        color: "warning",
+                      },
                       [Icon({ name: "pencil" })]
                     ),
                     Form({ action: "remove" }, [
@@ -133,7 +137,9 @@ export function TablePage({ title, url, data, columns, page, perPage, sort }) {
                         name: "id",
                         value: row.id,
                       }),
-                      Button({ color: "error" }, [Icon({ name: "trash" })]),
+                      Button({ size: "sm", color: "error" }, [
+                        Icon({ name: "trash" }),
+                      ]),
                     ]),
                   ]),
                 ]),

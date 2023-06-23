@@ -72,18 +72,25 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
         View(
           {
             tag: "li",
-            style:
-              "list-style-type: none; padding: var(--size-xxs) var(--size-sm); color: var(--color-base-content)",
+            style: "list-style-type: none",
           },
-          View({ tag: "a", href: item.href }, [
-            Icon({ name: item.icon }),
-            View(
-              {
-                style: "display: inline-block; padding-left: var(--size-xs);",
-              },
-              item.title
-            ),
-          ])
+          View(
+            {
+              tag: "a",
+              href: item.href,
+              style:
+                "text-decoration: none; display: flex; color: var(--color-base-800); padding: var(--size-xxs) var(--size-sm);",
+            },
+            [
+              Icon({ name: item.icon }),
+              View(
+                {
+                  style: "display: inline-block; padding-left: var(--size-xs);",
+                },
+                item.title
+              ),
+            ]
+          )
         )
       )
     );
@@ -100,14 +107,15 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
           // check if is logged in from props
           Row({ style: "align-items: center;" }, [
             Col({ col: true }),
+            Col({ class: "hide-light" }, [
+              Button({ onClick: "toggleTheme()" }, Icon({ name: "sun" })),
+            ]),
+            Col({ class: "hide-dark" }, [
+              Button({ onClick: "toggleTheme()" }, Icon({ name: "moon" })),
+            ]),
             user
               ? [
-                  Col([
-                    Avatar(
-                      { color: "info", size: "xs" },
-                      user.name.substring(0, 2)
-                    ),
-                  ]),
+                  Col([Avatar({ color: "info" }, user.name.substring(0, 2))]),
                   Form(
                     { action: "logout" },
                     Col([Button({ color: "error" }, "Logout")])
@@ -127,10 +135,49 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
     );
   }
 
+  const script = View(
+    { tag: "script" },
+    `
+    let theme = localStorage.getItem('THEME') ?? 'light'
+    if(theme === 'dark') {
+      document.body.classList.add('dark')
+    }
+
+    function toggleTheme() {
+      
+      if(theme === 'dark') {
+        theme = 'light'
+      } else {
+        theme = 'dark'
+      }
+      localStorage.setItem('THEME', theme)
+      document.body.classList.toggle('dark')
+
+    }
+  `
+  );
+  const css = View(
+    {
+      tag: "style",
+    },
+    `
+  .dark .hide-dark {
+    display: none;
+  }
+  .hide-light {
+    display: none;
+  }
+
+  .dark .hide-light {
+    display: unset;
+  }
+  `
+  );
+
   return [
     View(
       {
-        htmlHead: title ? `<title>${title}</title>` : "",
+        htmlHead: [title ? `<title>${title}</title>` : "", css],
         style:
           "position: fixed; width: 240px; top: 0; left: 0; height: 100%; background-color: var(--color-base-100); border-right: 1px solid var(--color-base-400);",
       },
@@ -139,7 +186,7 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
         Sidebar(),
       ]
     ),
-    View({ style: "margin-left: 240px;" }, [Header(), Body({}, slots)]),
+    View({ style: "margin-left: 240px;" }, [script, Header(), Body({}, slots)]),
   ];
 }
 

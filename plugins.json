@@ -1,1 +1,1 @@
-{"plugins":[{"name":"base","order":1,"active":true},{"name":"quiz","order":1,"active":true},{"name":"cms","order":1,"active":true},{"name":"crud","order":1,"active":true},{"name":"plugin","order":1,"active":true}]}
+{"plugins":[{"name":"cms","order":1,"active":true},{"name":"quiz","order":1,"active":true},{"name":"plugin","order":1,"active":true},{"name":"crud-users","order":1,"active":true}]}
