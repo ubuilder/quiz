@@ -61,12 +61,14 @@ export function LoginPage() {
 }
 
 export function AdminLayout({ title, sidebar = [], user }, slots) {
-  console.log("Admin Layout", sidebar);
+  console.log("Admin Layout", { sidebar, title, user });
+  user = { name: "hadi", username: "hadi" };
   function Sidebar() {
     return View(
       {
         tag: "ul",
-        style: "padding-left: 0; height: 100%;",
+        ps: 0,
+        h: 100,
       },
       sidebar.map((item) =>
         View(
@@ -78,14 +80,18 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
             {
               tag: "a",
               href: item.href,
-              style:
-                "text-decoration: none; display: flex; color: var(--color-base-800); padding: var(--size-xxs) var(--size-sm);",
+              d: "flex",
+              // color: base-800
+              py: "xxs",
+              p: "sm",
+              style: "text-decoration: none; color: var(--color-base-800);",
             },
             [
               Icon({ name: item.icon }),
               View(
                 {
-                  style: "display: inline-block; padding-left: var(--size-xs);",
+                  ps: "xs",
+                  d: "inline-block",
                 },
                 item.title
               ),
@@ -99,13 +105,14 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
   function Header() {
     return View(
       {
+        py: 'xxs',
         style:
-          "padding-top: var(--size-xxs); padding-bottom: var(--size-xxs); background-color: var(--color-base-100); border-bottom: 1px solid var(--color-base-400);",
+          "background-color: var(--color-base-100); border-bottom: 1px solid var(--color-base-400);",
       },
       [
         Container({ size: "xl", mx: "auto" }, [
           // check if is logged in from props
-          Row({ style: "align-items: center;" }, [
+          Row({ align: "center" }, [
             Col({ col: true }),
             Col({ class: "hide-light" }, [
               Button({ onClick: "toggleTheme()" }, Icon({ name: "sun" })),
@@ -178,13 +185,11 @@ export function AdminLayout({ title, sidebar = [], user }, slots) {
     View(
       {
         htmlHead: [title ? `<title>${title}</title>` : "", css],
+        h: 100,
         style:
-          "position: fixed; width: 240px; top: 0; left: 0; height: 100%; background-color: var(--color-base-100); border-right: 1px solid var(--color-base-400);",
+          "position: fixed; width: 240px; top: 0; left: 0; background-color: var(--color-base-100); border-right: 1px solid var(--color-base-400);",
       },
-      [
-        View({ style: "padding: var(--size-sm) var(--size-xxs)" }, "Logo"),
-        Sidebar(),
-      ]
+      [View({ px: "xxs", py: "sm" }, "Logo"), Sidebar()]
     ),
     View({ style: "margin-left: 240px;" }, [script, Header(), Body({}, slots)]),
   ];

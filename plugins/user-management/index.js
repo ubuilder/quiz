@@ -79,18 +79,7 @@ export default async function initUserManagement(ctx) {
     },
   });
 
-  // ctx.addPage("/logout", {
-  //   load() {
-  //     const cookie = ctx.logout();
-  //     return redirect({
-  //       location: "/login",
-  //       headers: {
-  //         "set-cookie": cookie,
-  //       },
-  //     });
-  //   },
-  // });
-
+ 
   ctx.addPage(
     "/login",
     {

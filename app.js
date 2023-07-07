@@ -34,7 +34,8 @@ function TestCrud({
           console.log(user);
 
           return {
-            user,
+            // user,
+            user: true,
             title: "Admin Panel",
             sidebar: sidebarItems,
           };

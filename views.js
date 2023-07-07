@@ -48,8 +48,10 @@ export function FormPage({ url, title, action, fields, value } = {}) {
       Card([
         View(
           {
-            style:
-              "padding: var(--size-xs); display: flex; align-items: center; gap: var(--size-sm);",
+            gap: "sm",
+            d: "flex",
+            align: "center",
+            p: "xs",
           },
           [
             Button(
@@ -111,7 +113,7 @@ export function TablePage({ title, url, data, columns, page, perPage, sort }) {
         TableHead([
           TableRow([
             ...columns.map((column) => TableCell(column.name)),
-            TableCell({ style: "width: 0" }, "Actions"),
+            TableCell({ w: 0 }, "Actions"),
           ]),
           TableBody(
             data.map((row) =>
@@ -120,7 +122,7 @@ export function TablePage({ title, url, data, columns, page, perPage, sort }) {
                   TableCell([column.render(row[column.key])])
                 ),
                 TableCell([
-                  View({ style: "display: flex; gap: var(--size-xxs)" }, [
+                  View({ gap: "xxs", d: "flex" }, [
                     Button({ size: "sm" }, [Icon({ name: "eye" })]),
                     Button(
                       {
@@ -132,7 +134,7 @@ export function TablePage({ title, url, data, columns, page, perPage, sort }) {
                     ),
                     Form({ action: "remove" }, [
                       Input({
-                        style: "display: none",
+                        d: "none",
                         type: "hidden",
                         name: "id",
                         value: row.id,

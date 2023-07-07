@@ -44,7 +44,7 @@ export function QuestionsPage({ questions = [] }) {
 
   function Header() {
     return Container({ size: "lg", mx: "auto", my: "md" }, [
-      Row({ style: "align-items: center;" }, [
+      Row({ align: "center" }, [
         Col([View({ tag: "h2" }, "Quiz App")]),
         Col({ ms: "auto" }, [
           ButtonGroup([
